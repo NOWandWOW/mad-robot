@@ -3,9 +3,6 @@
 This example program asks for user input to send a message to a OSC channel
 """
 import argparse
-import random
-import time
-
 from pythonosc import udp_client
 
 if __name__ == "__main__":
