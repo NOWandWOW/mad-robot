@@ -1,12 +1,18 @@
 """Small example OSC server
-
+From: https://pypi.org/project/python-osc/
 This program listens to /opacity address, and prints some information about
 received packets.
 """
 import argparse
+import time
 
 from pythonosc.dispatcher import Dispatcher
 from pythonosc import osc_server
+from typing import List, Any
+
+def nice_print(address: str, *osc_arguments: List[Any]):
+    text = str(osc_arguments[0])
+    print(f"Received message: {text[0:6]}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -16,10 +22,13 @@ if __name__ == "__main__":
                         type=int, default=8020, help="The port to listen on")
     args = parser.parse_args()
 
+    # Define which channel to listen to and which function to execute if a message is received
     dispatcher = Dispatcher()
-    dispatcher.map("/opacity", print)
+    dispatcher.map("/opacity", nice_print)
 
-    server = osc_server.ThreadingOSCUDPServer(
+    server = osc_server.BlockingOSCUDPServer(
         (args.ip, args.port), dispatcher)
     print("Serving on {}".format(server.server_address))
-    server.serve_forever()
+
+    while True:
+        server.handle_request()

@@ -1,5 +1,5 @@
 """Small example OSC client
-
+From: https://pypi.org/project/python-osc/
 This example program asks for user input to send a message to a OSC channel
 """
 import argparse
@@ -18,6 +18,7 @@ if __name__ == "__main__":
 
     while True:
         value = str(input("Add message you want to send in the format /channel;message\n"))
-        # Example: /medias/Text_Generator/Text;test
+        # Example: /medias/Text_Generator/Font/Text;test
         channel, text = value.split(";")
-        client.send_message(channel, text)
+        client.send_message(channel, float(text))
+        print(f"Sent {float(text)} to {channel}")
