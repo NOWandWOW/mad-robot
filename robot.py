@@ -1,4 +1,7 @@
 from utils import process_response, send_get_request, send_post_request, add_base_header
+import json
+import requests
+
 
 class Robot:
     def __init__(self, ip, user="", password="", cookie="", logging="INFO"):
@@ -49,6 +52,36 @@ class Robot:
         # Process the response as needed
         return process_response(response, log_level=self.log)
     
+    def create_task(self, task_name, body):
+        url = f"{self.base_url}/timelines"
+        payload = json.dumps(body)
+        base_header = {"Content-Type": "application/json", "Cookie": self.AUTH_TOKEN, "X-Control-Token": "Da119rLfdMM/29Wuw5rFGz81uv7QJLkWEaIT3t+pduo="}
+        headers = {}
+        headers.update(base_header)
+        response = requests.post(url, headers=headers, data=payload, verify=False)
+        # Process the response as needed
+        return process_response(response, log_level=self.log)
+    
+    def UI_create_task(self):
+        task_name = input("Choose a unique task name\n")
+        f = open('task_template.json')
+        body = json.load(f)
+        
+        body['parameter']['poses'][0]['relative_trajectories'][0]=[]
+        body["id"] = "0_"+task_name
+        body["name"] = task_name
+        body['containers'][0]['elements'][0]['componentProviders']['motion']['componentLookupTable'][0]['sourcePath']['id'] = task_name
+
+        num = input("How many points you want to teach?")
+        for i in range(int(num)):
+            val = input(f"please move to postition {i+1}:")
+            pose = robot.get_position()
+            print(pose)
+        
+            body['parameter']['poses'][0]['relative_trajectories'][0].append({'joint_angles':pose["jointAngles"], 'pose':pose["cartesianPose"]})
+
+        self.create_task(task_name, body)
+    
     def login_robot(self):
         # Send a POST request to login to the robot
         url = f"https://{self.IP}/admin/api/login"
@@ -68,13 +101,14 @@ if __name__ == "__main__":
     robot = Robot(ROBOT_IP, cookie=AUTH, logging="DEBUG")
 
     while True:
-        number = int(input("\n\nPlease enter a number from 1 to 6, with the following actions to happen: \
+        number = int(input("\n\nPlease enter a number from 1 to 7, with the following actions to happen: \
                    \n1: Open the brakes \
                    \n2: Close the brakes \
                    \n3: Get the robot position \
                    \n4: Get the robot status \
                    \n5: Get the system status \
-                   \n6: Start the task 'test'. CAREFUL the robot will move!\n"))
+                   \n6: Start the task 'matthieu'. CAREFUL the robot will move! \
+                   \n7: Create new task\n"))
         
         switcher = {
             1: robot.open_brakes,
@@ -82,7 +116,8 @@ if __name__ == "__main__":
             3: robot.get_position,
             4: robot.get_robot_status,
             5: robot.get_system_status,
-            6: robot.start_task
+            6: robot.start_task, 
+            7: robot.UI_create_task
         }
 
         # Get the function based on the input number
