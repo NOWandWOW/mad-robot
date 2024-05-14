@@ -17,7 +17,7 @@ def send_post_request(url, headers=None, data=None, auth=None):
     return response
 
 def add_base_header(headers, auth):
-    base_header = {"Content-Type": "application/x-www-form-urlencoded", "Cookie": f"{auth}", "X-Control-Token": "w7n8GKsO5UWoAbQWc8jXbX4jqtd6s7Sqc7hKlly0qM0="}
+    base_header = {"Content-Type": "application/x-www-form-urlencoded", "Cookie": f"{auth}", "X-Control-Token": "Da119rLfdMM/29Wuw5rFGz81uv7QJLkWEaIT3t+pduo="}
     headers = headers or {}
     headers.update(base_header)
     return headers
