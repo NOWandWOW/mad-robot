@@ -4,20 +4,20 @@ import inspect
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def send_get_request(url, headers=None, params=None, auth=None):
+def send_get_request(url, headers=None, params=None, auth=None, xcontrol=None):
     """Sends a GET request to the specified URL."""
-    headers = add_base_header(headers, auth)
+    headers = add_base_header(headers, auth, xcontrol)
     response = requests.get(url, headers=headers, params=params, verify=False)
     return response
 
-def send_post_request(url, headers=None, data=None, auth=None):
+def send_post_request(url, headers=None, data=None, auth=None, xcontrol=None):
     """Sends a POST request to the specified URL."""
-    headers = add_base_header(headers, auth)
+    headers = add_base_header(headers, auth, xcontrol)
     response = requests.post(url, headers=headers, data=data, verify=False)
     return response
 
-def add_base_header(headers, auth):
-    base_header = {"Content-Type": "application/x-www-form-urlencoded", "Cookie": f"{auth}", "X-Control-Token": "Da119rLfdMM/29Wuw5rFGz81uv7QJLkWEaIT3t+pduo="}
+def add_base_header(headers, auth, xcontrol):
+    base_header = {"Content-Type": "application/x-www-form-urlencoded", "Cookie": f"{auth}", "X-Control-Token": f"{xcontrol}"}
     headers = headers or {}
     headers.update(base_header)
     return headers
