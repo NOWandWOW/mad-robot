@@ -1,41 +1,43 @@
 from utils import process_response, send_get_request, send_post_request, add_base_header
 import json
 import requests
+import time
 
 
 class Robot:
-    def __init__(self, ip, user="", password="", cookie="", logging="INFO"):
+    def __init__(self, ip, user="", password="", cookie="", xcontrol="", logging="INFO"):
         self.IP = ip
         self.base_url = f"https://{self.IP}/desk/api"
         self.user = user
         self.password = password
         self.AUTH_TOKEN = cookie
+        self.XCONTROL_TOKEN = xcontrol
         self.log = logging
 
     def get_position(self):
         url = f"{self.base_url}/robot/configuration"
-        response = send_get_request(url, auth=self.AUTH_TOKEN)
+        response = send_get_request(url, auth=self.AUTH_TOKEN, xcontrol=self.XCONTROL_TOKEN)
         # Process the response and return the position
         return process_response(response, log_level=self.log)
 
     def get_robot_status(self):
         # Send a GET request to retrieve the robot's status
         url = f"{self.base_url}/robot/status"
-        response = send_get_request(url, auth=self.AUTH_TOKEN)
+        response = send_get_request(url, auth=self.AUTH_TOKEN, xcontrol=self.XCONTROL_TOKEN)
         # Process the response and return the status
         return process_response(response, log_level=self.log)
 
     def get_system_status(self):
         # Send a GET request to retrieve the robot's status
         url = f"{self.base_url}/system/status"
-        response = send_get_request(url, auth=self.AUTH_TOKEN)
+        response = send_get_request(url, auth=self.AUTH_TOKEN, xcontrol=self.XCONTROL_TOKEN)
         # Process the response and return the status
         return process_response(response, log_level=self.log)
     
     def get_task_list(self):
         # Send a GET request to retrieve the robot's status
         url = f"{self.base_url}/timelines"
-        response = send_get_request(url, auth=self.AUTH_TOKEN)
+        response = send_get_request(url, auth=self.AUTH_TOKEN, xcontrol=self.XCONTROL_TOKEN)
         # Process the response and return the status
         processed_response = process_response(response, log_level=self.log)
         task_names = []
@@ -48,19 +50,19 @@ class Robot:
         # Send a POST request to open the robot's brakes
         url = f"{self.base_url}/robot/open-brakes"
         data = {"force": "false"}
-        response = send_post_request(url, data=data, auth=self.AUTH_TOKEN)
+        response = send_post_request(url, data=data, auth=self.AUTH_TOKEN, xcontrol=self.XCONTROL_TOKEN)
         return process_response(response, log_level=self.log)
 
     def close_brakes(self):
         # Send a POST request to close the robot's brakes
         url = f"{self.base_url}/robot/close-brakes"
-        response = send_post_request(url, auth=self.AUTH_TOKEN)
+        response = send_post_request(url, auth=self.AUTH_TOKEN, xcontrol=self.XCONTROL_TOKEN)
         return process_response(response, log_level=self.log)
 
     def start_task(self, task_name):
         url = f"{self.base_url}/execution"
         data = {"id": f"0_{task_name}"}
-        response = send_post_request(url, data=data, auth=self.AUTH_TOKEN)
+        response = send_post_request(url, data=data, auth=self.AUTH_TOKEN, xcontrol=self.XCONTROL_TOKEN)
         # Process the response as needed
         return process_response(response, log_level=self.log)
     
@@ -98,7 +100,7 @@ class Robot:
         # Send a POST request to login to the robot
         url = f"https://{self.IP}/admin/api/login"
         data = {"login": f"{self.user}", "password": f"{self.password}"}
-        response = send_post_request(url, data=data, auth=self.AUTH_TOKEN)
+        response = send_post_request(url, data=data, auth=self.AUTH_TOKEN, xcontrol=self.XCONTROL_TOKEN)
         # Process the response as needed
         return process_response(response, log_level=self.log)
 
@@ -110,7 +112,8 @@ class Robot:
 if __name__ == "__main__":
     ROBOT_IP = "192.168.1.195"
     AUTH = "authorization=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZnJhIiwicm9sZSI6eyJhdXRob3JpemF0aW9uIjpbeyJwZXJtaXNzaW9uIjoiUmVhZFdyaXRlIiwicmVzb3VyY2UiOiJUYXNrcyJ9LHsicGVybWlzc2lvbiI6IlJlYWRXcml0ZSIsInJlc291cmNlIjoiU2tpbGxzIn0seyJwZXJtaXNzaW9uIjoiUmVhZFdyaXRlIiwicmVzb3VyY2UiOiJQYXJhbWV0ZXJzIn0seyJwZXJtaXNzaW9uIjoiUmVhZFdyaXRlIiwicmVzb3VyY2UiOiJFeGVjdXRpb24ifSx7InBlcm1pc3Npb24iOiJSZWFkV3JpdGUiLCJyZXNvdXJjZSI6IlN0YXR1cyJ9LHsicGVybWlzc2lvbiI6IlJlYWRXcml0ZSIsInJlc291cmNlIjoiQnVuZGxlcyJ9LHsicGVybWlzc2lvbiI6IlJlYWRXcml0ZSIsInJlc291cmNlIjoiU2NyaXB0cyJ9LHsicGVybWlzc2lvbiI6IlJlYWRXcml0ZSIsInJlc291cmNlIjoiQWRtaW4ifSx7InBlcm1pc3Npb24iOiJSZWFkV3JpdGUiLCJyZXNvdXJjZSI6IlNhZmV0eSJ9XSwibmFtZSI6ImFkbWluIn19.rGp0QvF1_d96hbWbetPr4Eg7DVJ4drO8cz8bpUqONj17_LkezZSakqZ72u3gXjXaInA6OM97m-bu4thgFdgblw"
-    robot = Robot(ROBOT_IP, cookie=AUTH, logging="INFO")
+    CONTROL_TOKEN = "q4ZspA4bhSlA9C9kS3Y0JYEqdnmDqIlZwcPFdE1gMJ8="
+    robot = Robot(ROBOT_IP, cookie=AUTH, xcontrol=CONTROL_TOKEN, logging="INFO")
 
     while True:
         number = int(input("\n\nPlease enter a number from 1 to 7, with the following actions to happen: \
@@ -140,6 +143,13 @@ if __name__ == "__main__":
         # Call the selected function if it exists
         if selected_function == robot.start_task:
             val = selected_function("matthieu")
+        elif selected_function == robot.get_position:
+            position = robot.get_position()
+            position["estimatedForces"].pop()
+            joint_angles = [axis/3.14*180 for axis in position["jointAngles"]]
+            print(f"Joint Angles: {joint_angles}")
+            cartesian = [int(float(pos)*10000)/10000.0 for pos in position["cartesianPose"]]
+            print(f"Cartesian x: {cartesian[12]},   y: {cartesian[13]},   z: {cartesian[14]}")
         elif selected_function:
             val = selected_function()
         else:
