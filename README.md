@@ -12,5 +12,5 @@ by NOW + WOW GmbH, check instagram : [@now_wow_com](https://instagram.com/now_wo
 - Open the developer tools in your webbrowser (in Chrome it's Ctrl + Shift + I)
 - Switch to the tab "network"
 - Click on Open or Close Brakes, the command pops up in the network terminal, see screenshot below
-- Click on the command and in the Request header, please extract the values for Cookie and for X-Control-Token, you will need them in the code and in Madmapper
-![Screenshot](https://github.com/NOWandWOW/mad-robot/blob/master/instructions.png?raw=true)
+- Click on the command and in the Request header, please extract the values for Cookie and for X-Control-Token, you will need them in the code and in Madmapper 
+![Screenshot](instructions.png)
