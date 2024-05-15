@@ -9,8 +9,8 @@ AUTH2 = "authorization=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZnJhIiwi
 XCONTROL1 = "q4ZspA4bhSlA9C9kS3Y0JYEqdnmDqIlZwcPFdE1gMJ8="
 XCONTROL2 = "qXToB9Z/tr3zBI7R0Z83kAkxI8h4mM1rXeOppqrN9as="
 
-ROBOT_IP1 = "192.168.1.195"
-ROBOT_IP2 = "192.168.1.196"
+ROBOT_IP1 = "192.168.1.195"  #right
+ROBOT_IP2 = "192.168.1.196"  #left
 
 MAD_IP = "<ENTER MADMAPPER IP HERE>"
 MAD_PORT_IN = 8010
@@ -25,4 +25,7 @@ robot2= Robot(ROBOT_IP2, cookie=AUTH2, xcontrol=XCONTROL2)
 if __name__ == "__main__":
     robot1.open_brakes()
     robot2.open_brakes()
+    time.sleep(0.5)
+    robot1.start_task("welcome_right")
+    robot2.start_task("welcome_left")
 
